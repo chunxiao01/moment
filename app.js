@@ -128,4 +128,4 @@ var routes = {
     'post/:postId': detail
 };
 var router = Router(routes);
-router.init('/');
+// router.init('/');
