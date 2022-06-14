@@ -95,15 +95,20 @@ function detail(id){
           $('#container').html('<center><img src="loading.gif" alt="loading" class="loading"></center>');
         },
         success:function(data){
-            var ractive = new Ractive({
-                 el: "#container",
-                 template: '#detailTpl',
-                 data: {post: data}
-            });
-
-            $('title').html(data.title + " | " + _config['blog_name']);
-            // toggleDuoshuoComments('#container', id);
-            highlight();
+          console.log(data);
+          var ractive = new Ractive({
+            el: "#container",
+            template: '#detailTpl',
+            data: {post: data}
+          });
+          $('title').html(data.title + " | " + _config['blog_name']);
+          // toggleDuoshuoComments('#container', id);
+          highlight();
+        },
+        error:function(XMLHttpRequest, textStatus, errorThrown){
+          console.log('XMLHttpRequest:', XMLHttpRequest)
+          console.log('textStatus:', textStatus)
+          console.log('errorThrown:', errorThrown)
         }
     });  
 
