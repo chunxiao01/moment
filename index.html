@@ -7,9 +7,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
     <title>时光 moment</title>
-    <link rel="stylesheet" href="css/GitHub2.css" type="text/css" />
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="css/style.css" type="text/css" />
     <link rel="stylesheet" href="css/base.css" type="text/css" />
     <link rel="stylesheet" href="css/highlight.min.css" />
     <script src="js/jquery-3.6.0.min.js"></script>
@@ -21,20 +19,100 @@
     <script src="js/highlight.min.js"></script>
   </head>
   <body>
-    <div id="header">
-      <h1><a href="#/" class="blog_title">时光 moment</a></h1>
-    </div>
-    <div id="container">
-      <center><img src="loading.gif" alt="loading" class="loading" /></center>
-    </div>
-    <script type="text/ractive" id="listTpl">
-      <ul class="postlist">
+    <header class="header">
+      <nav class="header_nav">
+        <span class="blog_title">
+          <a href="#/">
+            <h2 class="blog_title_text">时光 moment</h2>
+          </a>
+        </span>
+        <div class="blog_author">
+          <a href="https://github.com/cxycool">
+            <img src="img/avatar.jpg" alt="我的头像" />
+          </a>
+        </div>
+      </nav>
+    </header>
+    <main class="container">
+      <!-- <center><img src="loading.gif" alt="loading" class="loading" /></center> -->
+      <ul class="ul_postlist">
+        <li class="li_postlist" v-for="post in postlist">
+          <div class="post_container">
+            <header class="post_header">
+              <a href="https://github.com/cxycool" aria-label="post_author">
+                <div class="post_author">
+                  <img
+                    src="img/avatar.jpg"
+                    class="post_author_img"
+                    title="post_author"
+                  />
+                </div>
+              </a>
+              <div class="post_info">
+                <div class="post_info_content">
+                  <div class="post_info_author">
+                    <a
+                      href="https://github.com/cxycool"
+                      class="post_info_author_name"
+                      ><span title="soda">soda</span>
+                    </a>
+                  </div>
+                  <div class="post_info_time">
+                    <a
+                      title="2022-06-11 14:01"
+                      href="#/"
+                      class="post_info_time_text"
+                    >
+                      6-11 14:01
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </header>
+            <div class="post_main_content">
+              <div class="post_main_content_text">
+                <div class="post_main_content_text_detail">
+                  【0611】MDPR发布庆生高清图MDPR发布庆生高清图MDPR发布庆生高清图MDPR发布庆生高清图MDPR发布庆生高清图
+                  MDPR发布庆生高清图 MDPR发布庆生高清图MDPR发布庆生高清图
+                  MDPR发布庆生高清图MDPR发布庆生高清图MDPR发布庆生高清图
+                </div>
+              </div>
+              <div class="post_main_content_picture">
+                <div class="post_main_content_picture_container">
+                  <div
+                    class="post_main_content_picture_item post_main_content_picture_c1"
+                  >
+                    <div class="post_main_content_picture_item_container">
+                      <div
+                        class="post_main_content_picture_item_container_slot"
+                      >
+                        <img
+                          src="img/avatar.jpg"
+                          class="post_main_content_picture_item_container_img"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="post_main_content_bottom"></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </main>
+    <!-- <script type="text/ractive" id="listTpl">
+      <ul class="ul_postlist">
           {{#posts}}
-          <li class="postlist"><a href="#post/{{number}}">{{title}}</a>
-          <span class="datetime">
-          <!--<img src="{{user.avatar_url}}&s=18" class="avatar">.-->
-          <a href="{{user.html_url}}">{{user.login}}</a>.
-          {{formatTime(created_at)}}</span></li>
+          <li class="li_postlist">
+            <div class="post_container">
+              <a href="#post/{{number}}">{{title}}</a>
+              <span class="datetime">
+              <img src="{{user.avatar_url}}&s=18" class="avatar">.
+              <a href="{{user.html_url}}">{{user.login}}</a>.
+              {{formatTime(created_at)}}</span>
+            </div>
+          </li>
           {{/posts}}
       </ul>
       {{#prev}}<a href="#p{{page-1}}" class="prev">上一页</a>{{/prev}}
@@ -48,7 +126,7 @@
           发表于 {{formatTime(created_at)}}</span>
        <div class="content">{{{markdown2HTML(body)}}}</div>
       {{/post}}
-    </script>
-    <script src="app.js"></script>
+    </script> -->
+    <!-- <script src="app.js"></script> -->
   </body>
 </html>

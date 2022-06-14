@@ -3,8 +3,9 @@ function index(page) {
   var page = parseInt(page) || 1
   window._G = window._G || { post: {}, postList: {} }
   $("title").html(_config["blog_name"])
+  $(".blog_title_text").html(_config["blog_name"])
   if (_G.postList[page] != undefined) {
-    $("#container").html(_G.postList[page])
+    $(".container").html(_G.postList[page])
     return
   }
 
@@ -22,7 +23,7 @@ function index(page) {
       per_page: _config["per_page"]
     },
     beforeSend: function () {
-      $("#container").html(
+      $(".container").html(
         '<center><img src="loading.gif" class="loading"></center>'
       )
     },
@@ -46,7 +47,7 @@ function index(page) {
         }
       })
       window._G.postList[page] = ractive.toHTML()
-      $("#container").html(window._G.postList[page])
+      $(".container").html(window._G.postList[page])
 
       //将文章列表的信息存到全局变量中，避免重复请求
       for (i in data) {
@@ -87,7 +88,7 @@ function detail(id) {
   }
 
   if (_G.post[id].body != undefined) {
-    $("#container").html(_G.post[id].body)
+    $(".container").html(_G.post[id].body)
     $("title").html(_G.post[id].title)
     // toggleDuoshuoComments('#container', id);
     highlight()
@@ -105,14 +106,14 @@ function detail(id) {
       // access_token:_config['access_token']
     },
     beforeSend: function () {
-      $("#container").html(
+      $(".container").html(
         '<center><img src="loading.gif" alt="loading" class="loading"></center>'
       )
     },
     success: function (data) {
       console.log(data)
       var ractive = new Ractive({
-        el: "#container",
+        el: ".container",
         template: "#detailTpl",
         data: { post: data }
       })
