@@ -4,6 +4,8 @@ function index(page) {
   window._G = window._G || { post: {}, postList: {} }
   $("title").html(_config["blog_name"])
   $(".blog_title_text").html(_config["blog_name"])
+  $("#blog_author_url").text("https://github.com/" + _config["owner"])
+  // $("#blog_author_img").attr("src", "https://github.com/" + _config["owner"])
   if (_G.postList[page] != undefined) {
     $(".container").html(_G.postList[page])
     return
@@ -46,21 +48,22 @@ function index(page) {
           page: page
         }
       })
-      window._G.postList[page] = ractive.toHTML()
+      window._G.postList[page] = ractive
+      console.log(window._G.postList[page])
       $(".container").html(window._G.postList[page])
 
       //将文章列表的信息存到全局变量中，避免重复请求
-      for (i in data) {
-        var ractive = new Ractive({
-          template: "#detailTpl",
-          data: { post: data[i] }
-        })
-        window._G.post[data[i].number] = {}
-        window._G.post[data[i].number].body = ractive.toHTML()
+      // for (i in data) {
+      //   var ractive = new Ractive({
+      //     template: "#detailTpl",
+      //     data: { post: data[i] }
+      //   })
+      //   window._G.post[data[i].number] = {}
+      //   window._G.post[data[i].number].body = ractive.toHTML()
 
-        var title = data[i].title + " | " + _config["blog_name"]
-        window._G.post[data[i].number].title = title
-      }
+      //   var title = data[i].title + " | " + _config["blog_name"]
+      //   window._G.post[data[i].number].title = title
+      // }
     }
   })
 }
@@ -69,16 +72,6 @@ function highlight() {
   $("pre code").each(function (i, block) {
     hljs.highlightBlock(block)
   })
-}
-
-// 动态加载多说评论框的函数
-function toggleDuoshuoComments(container, id) {
-  //     var el = document.createElement('div');
-  //     var url = window.location.href;
-  //     el.setAttribute('data-thread-key', id);
-  //     el.setAttribute('data-url', url);
-  //     DUOSHUO.EmbedThread(el);
-  //     jQuery(container).append(el);
 }
 
 function detail(id) {
