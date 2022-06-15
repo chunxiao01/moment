@@ -80,9 +80,13 @@
               </header>
               <div class="post_main_content">
                 <div class="post_main_content_text">
-                  <div class="post_main_content_text_detail">{{post.body}}</div>
+                  <div class="post_main_content_text_title">{{post.title}}</div>
+                  <div
+                    class="post_main_content_text_detail"
+                    v-html="post.body"
+                  ></div>
                 </div>
-                <div class="post_main_content_picture">
+                <div class="post_main_content_picture" v-if="post.isshowpic">
                   <div class="post_main_content_picture_container">
                     <div
                       class="post_main_content_picture_item post_main_content_picture_c1"
