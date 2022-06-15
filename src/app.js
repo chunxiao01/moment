@@ -42,7 +42,7 @@ const app = new Vue({
     this.blog.blog_title = _config["blog_name"]
     document.title = this.blog.blog_title
     this.access_token = _config["access_token"]
-    this.per_page = this.per_page || _config["per_page"]
+    this.per_page = _config["per_page"]
     // document.querySelector('#container').
 
     let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
