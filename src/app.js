@@ -156,7 +156,7 @@ const app = new Vue({
               login: post.user.login,
               created_at: post.created_at,
               title: post.title,
-              body: marked.parse(post.body), //解析markdown
+              body: marked.parse(post.body || post.title || "无题"), //解析markdown
               isshowpic: false
             })
           }
