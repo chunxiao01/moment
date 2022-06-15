@@ -6,7 +6,7 @@ const app = new Vue({
         blog_title: ""
       },
       page: 1, //页数
-      per_page: 2, //每页数量
+      per_page: 0, //每页数量
       filter: "created", //筛选
       state: "open", //文章状态open close
       author: {
