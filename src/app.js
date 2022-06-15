@@ -146,6 +146,7 @@ const app = new Vue({
         })
         this.page = parseInt(this.page) + 1
       }
+      this.BS.refresh()
     },
     async getpostlistdetail(post_url) {
       let result = null
@@ -201,11 +202,10 @@ const app = new Vue({
       })
       this.BS.on("pullingUp", () => {
         //上拉加载更多
-        if ((this.page + 1) * this.per_page <= this.post_max_number) {
-          this.getpostlist()
-          this.BS.finishPullUp()
-          this.BS.refresh()
-        }
+        // if (this.page * this.per_page <= this.post_max_number) {
+        this.getpostlist()
+        this.BS.finishPullUp()
+        // }
       })
     },
     //滚动内容实时监听位置
