@@ -224,7 +224,6 @@ const app = new Vue({
           this.BS.finishPullUp()
         }
         if (this.postdata.length === this.post_max_number) {
-          console.log(this.postdata)
           this.BS.refresh()
         }
       })
