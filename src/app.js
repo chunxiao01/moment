@@ -8,7 +8,7 @@ const app = new Vue({
       page: 1, //页数
       per_page: 0, //每页数量
       filter: "created", //筛选
-      state: "open", //文章状态open close
+      state: "open", //文章状态open closed
       author: {
         author_id: "", //用户ID
         author_nickname: "", //用户昵称
@@ -38,13 +38,30 @@ const app = new Vue({
       BS: null //滚动条对象
     }
   },
+  async created() {
+    let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
+    url = url.trim()
+    await axios
+      .get(url, {
+        params: {
+          state: "open"
+        }
+      })
+      .then((response) => {
+        // 处理成功情况
+        this.post_max_number = response.data.length
+        return this.post_max_number
+      })
+      .catch(function (error) {
+        // 处理错误情况
+        console.log(error)
+      })
+  },
   async mounted() {
     this.blog.blog_title = _config["blog_name"]
     document.title = this.blog.blog_title
     this.access_token = _config["access_token"]
     this.per_page = _config["per_page"]
-    // document.querySelector('#container').
-
     let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
     url = url.trim()
     const page = this.page
@@ -75,7 +92,7 @@ const app = new Vue({
       this.author.author_name = postlist[0].user.login
       this.author.author_url = postlist[0].user.html_url
       this.author.author_avatar_url = postlist[0].user.avatar_url
-      this.post_max_number = postlist[0].number
+
       postlist.forEach((post) => {
         if (post.author_association === "OWNER" && post.state === "open") {
           this.postdata.push({
@@ -202,10 +219,13 @@ const app = new Vue({
       })
       this.BS.on("pullingUp", () => {
         //上拉加载更多
-        // if (this.page * this.per_page <= this.post_max_number) {
-        this.getpostlist()
-        this.BS.finishPullUp()
-        // }
+        if (this.postdata.length < this.post_max_number) {
+          this.getpostlist()
+          this.BS.finishPullUp()
+        }
+        if (this.postdata.length === this.post_max_number) {
+          this.BS.refresh()
+        }
       })
     },
     //滚动内容实时监听位置
