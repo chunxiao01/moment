@@ -31,7 +31,7 @@ const app = new Vue({
       },
       post_max_number: 0, //文章的数量
       postdata: [], //文章信息
-      access_token: null, //文章请求token
+      access_token: "", //文章请求token
       aside_menu_mode_type: false, //菜单设置详情按钮显示与隐藏
       isShowbacktop: false, //是否显示返回顶部按钮
       blogtheme: "light", //主题，默认浅色
@@ -224,6 +224,7 @@ const app = new Vue({
           this.BS.finishPullUp()
         }
         if (this.postdata.length === this.post_max_number) {
+          console.log(this.postdata)
           this.BS.refresh()
         }
       })
@@ -247,6 +248,11 @@ const app = new Vue({
     }
   }
 })
+
+//axios配置
+axios.defaults.headers.common[
+  "Authorization"
+] = `token ${_config["access_token"]}`
 
 //markdjs markdown转html设置
 marked.setOptions({

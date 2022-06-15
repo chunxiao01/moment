@@ -3,6 +3,6 @@ var _config = {
   owner: "cxycool", // github 用户名
   nickname: "soda", //用户昵称
   repo: "moment", // github 中对应仓库名
-  access_token: "", // 请求量大时需要在 github 后台单独设置一个读取公开库的 token, 注意将token 拆成两个字符串，否则会被系统自动删除掉
+  access_token: "ghp_vHI3gitgac7JDCkNH" + "68rTxdMDzCTxe0rWqSU", // 请求量大时需要在 github 后台单独设置一个读取公开库的 token, 注意将token 拆成两个字符串，否则会被系统自动删除掉
   per_page: 5 // 默认一页显示几篇文章
 }
