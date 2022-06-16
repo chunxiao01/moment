@@ -82,7 +82,8 @@ body {
   width: 100%;
   /* max-height: 400px; */
   background: var(--bs-white);
-  border-radius: 8px;
+  border-radius: 5px;
+  padding: 5px;
 }
 
 .post_header {
