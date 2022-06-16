@@ -32,7 +32,7 @@ const app = new Vue({
       post_max_number: 0, //文章的数量
       postdata: [], //文章信息
       access_token: "", //文章请求token
-      aside_menu_mode_type: false, //菜单设置详情按钮显示与隐藏
+      is_aside_menu_mode_show: false, //菜单设置详情按钮显示与隐藏
       isShowbacktop: false, //是否显示返回顶部按钮
       blogtheme: "light", //主题，默认浅色
       BS: null //滚动条对象
@@ -113,13 +113,6 @@ const app = new Vue({
       this.BS.refresh()
     })
   },
-  computed: {
-    aside_menu_mode_class() {
-      return this.aside_menu_mode_type
-        ? "aside_menu_mode_show"
-        : "aside_menu_mode_hide"
-    }
-  },
   methods: {
     async getpostlist() {
       //上拉加载事件
@@ -161,9 +154,9 @@ const app = new Vue({
             })
           }
         })
+        this.BS.refresh()
         this.page = parseInt(this.page) + 1
       }
-      this.BS.refresh()
     },
     async getpostlistdetail(post_url) {
       let result = null
@@ -207,9 +200,9 @@ const app = new Vue({
       // })
       let bs = BetterScroll.createBScroll("#container", {
         probeType: 3,
-        pullUpLoad: true,
-        scrollY: true,
-        scrollbar: true
+        pullUpLoad: true
+        // scrollY: true,
+        // scrollbar: true
       })
       // bs.on("refresh", () => {})
       this.BS = bs
@@ -231,11 +224,11 @@ const app = new Vue({
     //滚动内容实时监听位置
     scrollPosition(position) {
       const position_y = Math.abs(position.y)
-      this.isShowbacktop = position_y > 1500
+      this.isShowbacktop = position_y > 1200
     },
     asideSetClick() {
       //设置
-      this.aside_menu_mode_type = !this.aside_menu_mode_type
+      this.is_aside_menu_mode_show = !this.is_aside_menu_mode_show
     },
     toTopClick() {
       //滚动条回到顶部

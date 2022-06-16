@@ -113,31 +113,36 @@
           </li>
         </ul>
       </div>
-      <div class="aside_menu" id="aside_menu" v-if="isShowbacktop">
-        <div id="aside-config-hide" :class="aside_menu_mode_class">
-          <button
-            id="darkmode"
-            type="button"
-            title="深色模式和浅色模式切换"
-            @click="switchColorModeClick"
-          >
-            <img src="asset/img/adjust.svg" />
-          </button>
+      <transition name="aside-menu">
+        <div class="aside_menu" id="aside_menu" v-if="isShowbacktop">
+          <transition name="aside-menu-mode">
+            <div
+              class="aside_menu_cpn aside_menu_cpn_mode"
+              v-if="is_aside_menu_mode_show"
+            >
+              <div title="深色模式和浅色模式切换" @click="switchColorModeClick">
+                <img src="asset/img/adjust.svg" />
+              </div>
+            </div>
+          </transition>
+          <div class="aside_menu_set">
+            <div
+              class="aside_menu_cpn aside_menu_cpn_set"
+              title="设置"
+              @click="asideSetClick"
+            >
+              <img src="asset/img/set.svg" />
+            </div>
+            <div
+              class="aside_menu_cpn aside_menu_set_cpn"
+              title="回到顶部"
+              @click="toTopClick"
+            >
+              <img src="asset/img/up-arrow.svg" />
+            </div>
+          </div>
         </div>
-        <div id="aside-set" class="aside_menu_set">
-          <!-- <button
-            id="aside-set-btn"
-            type="button"
-            title="设置"
-            @click="asideSetClick"
-          >
-            <img src="asset/img/set.svg" />
-          </button> -->
-          <button id="go-up" type="button" title="回到顶部" @click="toTopClick">
-            <img src="asset/img/up-arrow.svg" />
-          </button>
-        </div>
-      </div>
+      </transition>
       <div class="footer"></div>
     </div>
     <script src="src/app.js"></script>
