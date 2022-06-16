@@ -236,7 +236,7 @@ const app = new Vue({
     },
     switchColorModeClick() {
       //切换深色和浅色模式
-      console.log(this.blogtheme)
+      // console.log(this.blogtheme)
     }
   }
 })
@@ -245,6 +245,7 @@ const app = new Vue({
 axios.defaults.headers.common[
   "Authorization"
 ] = `token ${_config["access_token"]}`
+axios.defaults.timeout = 30000
 
 //markdjs markdown转html设置
 marked.setOptions({
