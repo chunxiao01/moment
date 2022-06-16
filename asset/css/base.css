@@ -5,6 +5,10 @@ body {
   background: var(--bs-gray-200);
 }
 
+[v-cloak] {
+  display: none !important;
+}
+
 .header {
   position: fixed;
   width: 100%;
