@@ -25,12 +25,12 @@
     <!-- <script src="asset/js/vuex-3.6.2.js"></script> -->
   </head>
   <body>
-    <div id="app" v-cloak>
+    <div id="app">
       <header class="header">
         <nav class="header_nav">
           <span class="blog_title">
             <a :href="blog.blog_url">
-              <h2 class="blog_title_text">{{blog.blog_title}}</h2>
+              <h2 class="blog_title_text" v-cloak>{{blog.blog_title}}</h2>
             </a>
           </span>
           <div class="blog_author">
@@ -62,7 +62,7 @@
                   <div class="post_info_content">
                     <div class="post_info_author">
                       <a :href="blog.blog_url" class="post_info_author_name"
-                        ><span :title="post.login"
+                        ><span :title="post.login" v-cloak
                           >{{author.author_nickname}}</span
                         >
                       </a>
@@ -72,6 +72,7 @@
                         :title="daterealformat(post.created_at)"
                         href="#/"
                         class="post_info_time_text"
+                        v-cloak
                       >
                         {{dateformat(post.created_at)}}
                       </a>
@@ -81,7 +82,9 @@
               </header>
               <div class="post_main_content">
                 <div class="post_main_content_text">
-                  <div class="post_main_content_text_title">{{post.title}}</div>
+                  <div class="post_main_content_text_title" v-cloak>
+                    {{post.title}}
+                  </div>
                   <div
                     class="post_main_content_text_detail"
                     v-html="post.body"
