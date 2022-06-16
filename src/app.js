@@ -90,6 +90,10 @@ const app = new Vue({
             // }
           })
         }
+        //删除动画
+        if (document.getElementById("Loading"))
+          document.getElementById("Loading").remove()
+
         this.$nextTick(() => {
           this.getscroll() //滚动条
         })
