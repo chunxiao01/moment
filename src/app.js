@@ -193,7 +193,7 @@ const app = new Vue({
         // scrollbar: true
       })
 
-      this.getAllImgLoad()
+      // this.getAllImgLoad()
 
       this.BS.on("scroll", (position) => {
         //滚动事件
@@ -265,7 +265,7 @@ marked.setOptions({
 //重新计算container高度
 const clientHeight =
   document.body.clientHeight || document.documentElement.clientHeight
-document.getElementById("container").style.height = clientHeight - 75 + "px"
+document.getElementById("container").style.height = clientHeight - 50 + "px"
 // console.log(document.getElementById("container").style.height)
 
 //判断图片是否加载完成
