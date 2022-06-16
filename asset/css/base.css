@@ -62,8 +62,7 @@ body {
   margin-top: 65px;
   margin-bottom: 10px;
   padding: 0;
-  /* height: calc(100vh - 75px); */
-  height: 770px;
+  height: calc(100vh - 75px);
 }
 
 .ul_postlist {

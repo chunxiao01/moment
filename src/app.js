@@ -38,26 +38,7 @@ const app = new Vue({
       BS: null //滚动条对象
     }
   },
-  async created() {
-    let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
-    url = url.trim()
-    await axios
-      .get(url, {
-        params: {
-          state: "open"
-        }
-      })
-      .then((response) => {
-        // 处理成功情况
-        this.post_max_number = response.data.length
-        return this.post_max_number
-      })
-      .catch(function (error) {
-        // 处理错误情况
-        console.log(error)
-      })
-  },
-  async mounted() {
+  mounted() {
     this.blog.blog_title = _config["blog_name"]
     document.title = this.blog.blog_title
     this.access_token = _config["access_token"]
@@ -68,7 +49,7 @@ const app = new Vue({
     const per_page = this.per_page
     const filter = this.filter
     const state = this.state
-    const postlist = await axios
+    axios
       .get(url, {
         params: {
           page,
@@ -77,44 +58,45 @@ const app = new Vue({
           state
         }
       })
-      .then(function (response) {
+      .then((response) => {
         // 处理成功情况
-        return response.data
+        const postlist = response.data
+
+        if (Array.isArray(postlist) && postlist.length > 0) {
+          this.author.author_id = postlist[0].user.id
+          this.author.author_nickname =
+            _config["nickname"] || postlist[0].user.login
+          this.author.author_name = postlist[0].user.login
+          this.author.author_url = postlist[0].user.html_url
+          this.author.author_avatar_url = postlist[0].user.avatar_url
+
+          postlist.forEach((post) => {
+            if (post.author_association === "OWNER" && post.state === "open") {
+              this.postdata.push({
+                avatar_url: post.user.avatar_url,
+                html_url: post.user.html_url,
+                login: post.user.login,
+                created_at: post.created_at,
+                title: post.title,
+                body: marked.parse(post.body || ""), //解析markdown
+                isshowpic: false
+              })
+            }
+          })
+        }
+        this.getscroll() //滚动条
+
+        this.$nextTick(() => {
+          this.BS.refresh()
+        })
       })
-      .catch(function (error) {
+      .catch((error) => {
         // 处理错误情况
         console.log(error)
       })
-    if (Array.isArray(postlist) && postlist.length > 0) {
-      this.author.author_id = postlist[0].user.id
-      this.author.author_nickname =
-        _config["nickname"] || postlist[0].user.login
-      this.author.author_name = postlist[0].user.login
-      this.author.author_url = postlist[0].user.html_url
-      this.author.author_avatar_url = postlist[0].user.avatar_url
-
-      postlist.forEach((post) => {
-        if (post.author_association === "OWNER" && post.state === "open") {
-          this.postdata.push({
-            avatar_url: post.user.avatar_url,
-            html_url: post.user.html_url,
-            login: post.user.login,
-            created_at: post.created_at,
-            title: post.title,
-            body: marked.parse(post.body || post.title || "无题"), //解析markdown
-            isshowpic: false
-          })
-        }
-      })
-    }
-
-    this.getscroll() //滚动条
-    this.$nextTick(() => {
-      this.BS.refresh()
-    })
   },
   methods: {
-    async getpostlist() {
+    getpostlist() {
       //上拉加载事件
       let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
       url = url.trim()
@@ -122,7 +104,7 @@ const app = new Vue({
       const per_page = this.per_page
       const filter = this.filter
       const state = this.state
-      const postlist = await axios
+      axios
         .get(url, {
           params: {
             page,
@@ -131,42 +113,48 @@ const app = new Vue({
             state
           }
         })
-        .then(function (response) {
+        .then((response) => {
           // 处理成功情况
-          return response.data
+          const postlist = response.data
+          if (Array.isArray(postlist) && postlist.length > 0) {
+            postlist.forEach((post) => {
+              if (
+                post.author_association === "OWNER" &&
+                post.state === "open"
+              ) {
+                this.postdata.push({
+                  avatar_url: post.user.avatar_url,
+                  html_url: post.user.html_url,
+                  login: post.user.login,
+                  created_at: post.created_at,
+                  title: post.title,
+                  body: marked.parse(post.body || ""), //解析markdown
+                  isshowpic: false
+                })
+              }
+            })
+            this.BS.refresh()
+            this.page = parseInt(this.page) + 1
+            this.BS.finishPullUp()
+
+            console.log(document.getElementById("container").offsetHeight)
+            console.log(document.getElementById("ul_postlist").offsetHeight)
+          }
         })
-        .catch(function (error) {
+        .catch((error) => {
           // 处理错误情况
           console.log(error)
         })
-
-      if (Array.isArray(postlist) && postlist.length > 0) {
-        postlist.forEach((post) => {
-          if (post.author_association === "OWNER" && post.state === "open") {
-            this.postdata.push({
-              avatar_url: post.user.avatar_url,
-              html_url: post.user.html_url,
-              login: post.user.login,
-              created_at: post.created_at,
-              title: post.title,
-              body: marked.parse(post.body || post.title || "无题"), //解析markdown
-              isshowpic: false
-            })
-          }
-        })
-        this.BS.refresh()
-        this.page = parseInt(this.page) + 1
-      }
     },
-    async getpostlistdetail(post_url) {
+    getpostlistdetail(post_url) {
       let result = null
-      await axios
+      axios
         .get(post_url)
-        .then(function (response) {
+        .then((response) => {
           // 处理成功情况
           return response.data
         })
-        .catch(function (error) {
+        .catch((error) => {
           // 处理错误情况
           console.log(error)
         })
@@ -212,13 +200,13 @@ const app = new Vue({
       })
       this.BS.on("pullingUp", () => {
         //上拉加载更多
-        if (this.postdata.length < this.post_max_number) {
-          this.getpostlist()
-          this.BS.finishPullUp()
-        }
-        if (this.postdata.length === this.post_max_number) {
-          this.BS.refresh()
-        }
+        // if (this.postdata.length < this.post_max_number) {
+        this.getpostlist()
+        //   this.BS.finishPullUp()
+        // }
+        // if (this.postdata.length === this.post_max_number) {
+        //   this.BS.refresh()
+        // }
       })
     },
     //滚动内容实时监听位置
