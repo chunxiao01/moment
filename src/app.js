@@ -3,12 +3,14 @@ const app = new Vue({
   data() {
     return {
       blog: {
-        blog_title: ""
+        blog_title: "",
+        blog_url: "",
+        blog_pub_url: ""
       },
       page: 1, //页数
       per_page: 0, //每页数量
       filter: "created", //筛选
-      state: "open", //文章状态open closed
+      state: "open", //文章状态open closed all
       author: {
         author_id: "", //用户ID
         author_nickname: "", //用户昵称
@@ -40,9 +42,13 @@ const app = new Vue({
   },
   mounted() {
     this.blog.blog_title = _config["blog_name"]
+    this.blog.blog_url = `https://${_config["owner"]}.github.io/${_config["repo"]}`
+    this.blog.blog_pub_url = `https://github.com/${_config["owner"]}/${_config["repo"]}/issues`
     document.title = this.blog.blog_title
     this.access_token = _config["access_token"]
     this.per_page = _config["per_page"]
+    this.state = _config["state"]
+
     let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
     url = url.trim()
     const page = this.page
@@ -71,23 +77,21 @@ const app = new Vue({
           this.author.author_avatar_url = postlist[0].user.avatar_url
 
           postlist.forEach((post) => {
-            if (post.author_association === "OWNER" && post.state === "open") {
-              this.postdata.push({
-                avatar_url: post.user.avatar_url,
-                html_url: post.user.html_url,
-                login: post.user.login,
-                created_at: post.created_at,
-                title: post.title,
-                body: marked.parse(post.body || ""), //解析markdown
-                isshowpic: false
-              })
-            }
+            // if (post.author_association === "OWNER" && post.state === "open") {
+            this.postdata.push({
+              avatar_url: post.user.avatar_url,
+              html_url: post.user.html_url,
+              login: post.user.login,
+              created_at: post.created_at,
+              title: post.title,
+              body: marked.parse(post.body || ""), //解析markdown
+              isshowpic: false
+            })
+            // }
           })
         }
-        this.getscroll() //滚动条
-
         this.$nextTick(() => {
-          this.BS.refresh()
+          this.getscroll() //滚动条
         })
       })
       .catch((error) => {
@@ -95,15 +99,14 @@ const app = new Vue({
         console.log(error)
       })
   },
+  updated() {
+    if (this.BS) {
+      this.getAllImgLoad()
+    }
+  },
   methods: {
-    getpostlist() {
+    getpostlist(url, page, per_page, filter, state) {
       //上拉加载事件
-      let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
-      url = url.trim()
-      const page = parseInt(this.page) + 1
-      const per_page = this.per_page
-      const filter = this.filter
-      const state = this.state
       axios
         .get(url, {
           params: {
@@ -118,28 +121,24 @@ const app = new Vue({
           const postlist = response.data
           if (Array.isArray(postlist) && postlist.length > 0) {
             postlist.forEach((post) => {
-              if (
-                post.author_association === "OWNER" &&
-                post.state === "open"
-              ) {
-                this.postdata.push({
-                  avatar_url: post.user.avatar_url,
-                  html_url: post.user.html_url,
-                  login: post.user.login,
-                  created_at: post.created_at,
-                  title: post.title,
-                  body: marked.parse(post.body || ""), //解析markdown
-                  isshowpic: false
-                })
-              }
+              this.postdata.push({
+                avatar_url: post.user.avatar_url,
+                html_url: post.user.html_url,
+                login: post.user.login,
+                created_at: post.created_at,
+                title: post.title,
+                body: marked.parse(post.body || ""), //解析markdown
+                isshowpic: false
+              })
             })
-            this.BS.refresh()
-            this.page = parseInt(this.page) + 1
-            this.BS.finishPullUp()
+            if (this.BS) {
+              this.BS.finishPullUp()
+            }
 
-            console.log(document.getElementById("container").offsetHeight)
-            console.log(document.getElementById("ul_postlist").offsetHeight)
+            this.page = parseInt(this.page) + 1
           }
+
+          // console.log(document.getElementById("container").style.height)
         })
         .catch((error) => {
           // 处理错误情况
@@ -186,27 +185,29 @@ const app = new Vue({
       //   probeType: 3,
       //   pullUpLoad: true
       // })
-      let bs = BetterScroll.createBScroll("#container", {
+
+      this.BS = BetterScroll.createBScroll("#container", {
         probeType: 3,
         pullUpLoad: true
         // scrollY: true,
         // scrollbar: true
       })
-      // bs.on("refresh", () => {})
-      this.BS = bs
+
+      this.getAllImgLoad()
+
       this.BS.on("scroll", (position) => {
         //滚动事件
         this.scrollPosition(position)
       })
       this.BS.on("pullingUp", () => {
         //上拉加载更多
-        // if (this.postdata.length < this.post_max_number) {
-        this.getpostlist()
-        //   this.BS.finishPullUp()
-        // }
-        // if (this.postdata.length === this.post_max_number) {
-        //   this.BS.refresh()
-        // }
+        let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
+        url = url.trim()
+        const page = parseInt(this.page) + 1
+        const per_page = this.per_page
+        const filter = this.filter
+        const state = this.state
+        this.getpostlist(url, page, per_page, filter, state)
       })
     },
     //滚动内容实时监听位置
@@ -220,11 +221,21 @@ const app = new Vue({
     },
     toTopClick() {
       //滚动条回到顶部
-      this.BS.scrollTo(0, 0, 1000)
+      if (this.BS) {
+        this.BS.scrollTo(0, 0, 1000)
+      }
     },
     switchColorModeClick() {
       //切换深色和浅色模式
       // console.log(this.blogtheme)
+    },
+    getAllImgLoad() {
+      //获取所有图片加载成功，滚动条refresh
+      const arrImgs = getAllImgs() //获取所有动态加载的图片
+      Promise.all(loadImgs(arrImgs)).then(() => {
+        //判断图片加载完成
+        this.BS.refresh()
+      })
     }
   }
 })
@@ -250,3 +261,34 @@ marked.setOptions({
     return highlight.highlightAuto(code).value
   }
 })
+
+//重新计算container高度
+const clientHeight =
+  document.body.clientHeight || document.documentElement.clientHeight
+document.getElementById("container").style.height = clientHeight - 75 + "px"
+// console.log(document.getElementById("container").style.height)
+
+//判断图片是否加载完成
+function loadImgs(arr) {
+  const newimages = []
+  for (var i = 0; i < arr.length; i++) {
+    newimages[i] = new Promise(function (resolve, reject) {
+      var image = new Image()
+      image.addEventListener("load", function listener() {
+        resolve(image)
+        this.removeEventListener("load", listener)
+      })
+      image.src = arr[i].src
+      image.addEventListener("error", reject)
+    })
+    // console.log(arr[i].src)
+  }
+  return newimages
+}
+
+//获取容器加载出来的所有图片
+function getAllImgs() {
+  const imgs = document.querySelectorAll(".ul_postlist img")
+  // console.log(Array.prototype.slice.call(imgs))
+  return Array.prototype.slice.call(imgs, 0)
+}

@@ -2,10 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title></title>
     <link rel="shortcut icon" href="favicon.png" />
     <link rel="stylesheet" href="asset/css/bootstrap.min.css" type="text/css" />
@@ -31,12 +29,12 @@
       <header class="header">
         <nav class="header_nav">
           <span class="blog_title">
-            <a href="#/">
+            <a :href="blog.blog_url">
               <h2 class="blog_title_text">{{blog.blog_title}}</h2>
             </a>
           </span>
           <div class="blog_author">
-            <a :href="author.author_url" id="blog_author_url">
+            <a :href="blog.blog_pub_url" id="blog_author_url">
               <img
                 :src="author.author_avatar_url"
                 id="blog_author_img"
@@ -51,7 +49,7 @@
           <li class="li_postlist" v-for="post in postdata">
             <div class="post_container">
               <header class="post_header">
-                <a :href="author.author_url" aria-label="post_author">
+                <a :href="blog.blog_url" aria-label="post_author">
                   <div class="post_author">
                     <img
                       :src="post.avatar_url"
@@ -63,7 +61,7 @@
                 <div class="post_info">
                   <div class="post_info_content">
                     <div class="post_info_author">
-                      <a :href="post.html_url" class="post_info_author_name"
+                      <a :href="blog.blog_url" class="post_info_author_name"
                         ><span :title="post.login"
                           >{{author.author_nickname}}</span
                         >
