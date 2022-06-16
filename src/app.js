@@ -11,6 +11,7 @@ const app = new Vue({
       per_page: 0, //每页数量
       filter: "created", //筛选
       state: "open", //文章状态open closed all
+      blog_author_type: "", //发布博客的用户 默认 OWNER
       author: {
         author_id: "", //用户ID
         author_nickname: "", //用户昵称
@@ -48,6 +49,7 @@ const app = new Vue({
     this.access_token = _config["access_token"]
     this.per_page = _config["per_page"]
     this.state = _config["state"]
+    this.blog_author_type = _config["blog_author_type"]
 
     let url = `https://api.github.com/repos/${_config["owner"]}/${_config["repo"]}/issues`
     url = url.trim()
@@ -67,17 +69,23 @@ const app = new Vue({
       .then((response) => {
         // 处理成功情况
         const postlist = response.data
-
+        let postlist_owner = [] //自己发布的文章
         if (Array.isArray(postlist) && postlist.length > 0) {
-          this.author.author_id = postlist[0].user.id
+          postlist_owner = postlist.filter(
+            (post) =>
+              post.author_association === this.blog_author_type &&
+              post.state === this.state
+          )
+        }
+        if (Array.isArray(postlist_owner) && postlist_owner.length > 0) {
+          this.author.author_id = postlist_owner[0].user.id
           this.author.author_nickname =
-            _config["nickname"] || postlist[0].user.login
-          this.author.author_name = postlist[0].user.login
-          this.author.author_url = postlist[0].user.html_url
-          this.author.author_avatar_url = postlist[0].user.avatar_url
+            _config["nickname"] || postlist_owner[0].user.login
+          this.author.author_name = postlist_owner[0].user.login
+          this.author.author_url = postlist_owner[0].user.html_url
+          this.author.author_avatar_url = postlist_owner[0].user.avatar_url
 
-          postlist.forEach((post) => {
-            // if (post.author_association === "OWNER" && post.state === "open") {
+          postlist_owner.forEach((post) => {
             this.postdata.push({
               avatar_url: post.user.avatar_url,
               html_url: post.user.html_url,
@@ -87,7 +95,6 @@ const app = new Vue({
               body: marked.parse(post.body || ""), //解析markdown
               isshowpic: false
             })
-            // }
           })
         }
         //删除动画
@@ -123,8 +130,16 @@ const app = new Vue({
         .then((response) => {
           // 处理成功情况
           const postlist = response.data
+          let postlist_owner = [] //自己发布的文章
           if (Array.isArray(postlist) && postlist.length > 0) {
-            postlist.forEach((post) => {
+            postlist_owner = postlist.filter(
+              (post) =>
+                post.author_association === this.blog_author_type &&
+                post.state === this.state
+            )
+          }
+          if (Array.isArray(postlist_owner) && postlist_owner.length > 0) {
+            postlist_owner.forEach((post) => {
               this.postdata.push({
                 avatar_url: post.user.avatar_url,
                 html_url: post.user.html_url,
@@ -135,6 +150,7 @@ const app = new Vue({
                 isshowpic: false
               })
             })
+
             if (this.BS) {
               this.BS.finishPullUp()
             }
